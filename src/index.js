@@ -100,14 +100,18 @@ export default (options = {}) => ComposedComponent => {
     handleListeners(method) {
       const escToClose = this.makeSureValue('escToClose');
       const clickToClose = this.makeSureValue('clickToClose');
+      const tabToClose = this.makeSureValue('tabToClose');
 
       const handle = document[method].bind(document);
       if (escToClose) {
-        handle('keydown', this.handleKeydown);
+        handle('keydown', this.handleEscape);
       }
       if (clickToClose) {
         handle('click', this.handleDocumentClick);
         handle('touchstart', this.handleDocumentClick);
+      }
+      if (tabToClose) {
+        handle('keydown', this.handleTab);
       }
     }
 
@@ -120,8 +124,14 @@ export default (options = {}) => ComposedComponent => {
       }
     };
 
-    handleKeydown = (e) => {
+    handleEscape = (e) => {
       if (e.key === 'Escape') {
+        this.ensureClosedPortal();
+      }
+    };
+
+    handleTab = (e) => {
+      if (e.key === 'Tab') {
         this.ensureClosedPortal();
       }
     };
